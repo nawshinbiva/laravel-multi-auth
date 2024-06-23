@@ -33,4 +33,25 @@ class LoginController extends Controller
                 ->withErrors($validator);
         }
     }
+
+    public function register(){
+       
+        return view("register");
+    }
+
+    public function processRegister(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:users',
+            'password' => 'required|confirmed'
+        ]);
+
+        if ($validator->passes()) {
+
+            
+        } else {
+            return redirect()->route('account.register')
+                ->withInput()
+                ->withErrors($validator);
+        }
+    }
 }
