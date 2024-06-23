@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -8,4 +9,5 @@ Route::get('/', function () {
 });
 
 route::get('/account/login', [LoginController::class, 'index'])->name('account.login');
-route::post('/account/authenticate',[LoginController::class,'authenticate'])->name('account.authenticate');
+route::post('/account/authenticate', [LoginController::class, 'authenticate'])->name('account.authenticate');
+route::get('/account/dashboard', [DashboardController::class, 'index'])->name('account.dashboard');
