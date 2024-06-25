@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\admin\LoginController as AdminLoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
@@ -8,13 +10,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-route::get('/account/login', [LoginController::class, 'index'])->name('account.login');
-route::post('/account/authenticate', [LoginController::class, 'authenticate'])->name('account.authenticate');
+Route::group(['prefix' => 'account'], function () {
 
-route::get('/account/register', [LoginController::class, 'register'])->name('account.register');
-route::post('/account/process-register', [LoginController::class, 'processRegister'])->name('account.processRegister');
+    Route::group(['middleware' => 'guest'], function () {
+        Route::get('login', [LoginController::class, 'index'])->name('account.login');
+        route::get('register', [LoginController::class, 'register'])->name('account.register');
+        route::post('process-register', [LoginController::class, 'processRegister'])->name('account.processRegister');
+        route::post('authenticate', [LoginController::class, 'authenticate'])->name('account.authenticate');
+    });
 
+    Route::group(['middleware' => 'auth'], function () {
+        route::get('dashboard', [DashboardController::class, 'index'])->name('account.dashboard');
+        route::get('logout', [LoginController::class, 'logout'])->name('account.logout');
+    });
+});
 
-route::get('/account/dashboard', [DashboardController::class, 'index'])->name('account.dashboard');
+Route::get('admin/login', [AdminLoginController::class, 'index'])->name('admin.login');
+route::get('admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+route::post('admin/authenticate', [AdminLoginController::class, 'authenticate'])->name('admin.authenticate');
 
-route::get('/account/logout', [LoginController::class, 'logout'])->name('account.logout');
