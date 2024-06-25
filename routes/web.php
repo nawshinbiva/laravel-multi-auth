@@ -17,3 +17,4 @@ route::post('/account/process-register', [LoginController::class, 'processRegist
 
 route::get('/account/dashboard', [DashboardController::class, 'index'])->name('account.dashboard');
 
+route::get('/account/logout', [LoginController::class, 'logout'])->name('account.logout');
