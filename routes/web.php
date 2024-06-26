@@ -25,7 +25,19 @@ Route::group(['prefix' => 'account'], function () {
     });
 });
 
-Route::get('admin/login', [AdminLoginController::class, 'index'])->name('admin.login');
-route::get('admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-route::post('admin/authenticate', [AdminLoginController::class, 'authenticate'])->name('admin.authenticate');
+
+Route::group(['prefix' => 'admin'], function () {
+
+    Route::group(['middleware' => 'guest'], function () {
+        Route::get('login', [AdminLoginController::class, 'index'])->name('admin.login');
+        route::post('authenticate', [AdminLoginController::class, 'authenticate'])->name('admin.authenticate');
+    });
+
+    Route::group(['middleware' => 'auth'], function () {
+        route::get('dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+
+    });
+});
+
 

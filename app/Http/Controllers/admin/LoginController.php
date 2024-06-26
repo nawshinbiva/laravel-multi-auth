@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return view('admin.login');
     }
 
@@ -22,11 +23,15 @@ class LoginController extends Controller
 
         if ($validator->passes()) {
 
-            if (Auth::guard('admin')-> attempt(['email' => $request->email, 'password' => $request->password])) {
-                
+            if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
+
+                if (Auth::guard('admin')->user()->role != "admin") {
+                    Auth::guard('admin')->logout();
+                    return redirect()->route('admin.login')->with('error', 'You are not authorized to access this page!');
+                }
                 return redirect()->route('admin.dashboard');
             } else {
-                return redirect()->route('admin.login')->with('error','Either email or password is incorrect!');
+                return redirect()->route('admin.login')->with('error', 'Either email or password is incorrect!');
             }
         } else {
             return redirect()->route('admin.login')
@@ -35,5 +40,10 @@ class LoginController extends Controller
         }
     }
 
+    public function logout(){
+        Auth::guard('admin')->logout();
+        return redirect()->route('admin.login');
+
+    }
 
 }
